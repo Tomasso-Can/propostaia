@@ -162,7 +162,16 @@ export default function PropostaIA({ user }: PropostaIAProps) {
       y += 8;
     });
 
-    // Rodapé
+    // Final simplificado e elegante
+    y += 15;
+    doc.setFontSize(13);
+    doc.text("Atenciosamente,", 32, y);
+
+    y += 12;
+    doc.setFont("helvetica", "bold");
+    doc.text(nomeUtilizador || user.email, 32, y);
+
+    // Rodapé discreto
     const pageCount = doc.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
@@ -355,4 +364,3 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     </div>
   );
 }
-
