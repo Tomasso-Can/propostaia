@@ -159,7 +159,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
       y += 8;
     });
 
-    // Rodapé elegante
+    // Rodapé
     const pageCount = doc.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
@@ -264,7 +264,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
                 {proposta && (
                   <button
                     onClick={() => downloadPDF(proposta, nomeCliente)}
-                    className="flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-semibold transition"
+                    className="flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-semibold transition-all"
                   >
                     <Download className="w-5 h-5" />
                     Download PDF
