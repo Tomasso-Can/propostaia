@@ -95,7 +95,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     const pageWidth = doc.internal.pageSize.getWidth();
     let y = 55;
 
-    // Capa profissional
+    // Capa
     doc.setFillColor(15, 23, 42);
     doc.rect(0, 0, pageWidth, 297, 'F');
 
@@ -108,7 +108,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     doc.setFontSize(28);
     doc.text("COMERCIAL", pageWidth / 2, y, { align: "center" });
 
-    y += 80;
+    y += 75;
     doc.setFontSize(16);
     doc.setTextColor(180, 200, 255);
     doc.text("Para", pageWidth / 2, y, { align: "center" });
@@ -116,7 +116,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     y += 18;
     doc.setFontSize(23);
     doc.setTextColor(255);
-    doc.text(nomeClientePDF, pageWidth / 2, y, { align: "center" });
+    doc.text(nomeClientePDF.toUpperCase(), pageWidth / 2, y, { align: "center" });
 
     y += 65;
     doc.setFontSize(11);
@@ -130,7 +130,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
       day: 'numeric' 
     }), pageWidth / 2, y, { align: "center" });
 
-    // Conteúdo
+    // Página de conteúdo
     doc.addPage();
     y = 40;
 
@@ -138,13 +138,16 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     doc.setFontSize(20);
     doc.text("Proposta Comercial", pageWidth / 2, y, { align: "center" });
 
-    y += 20;
+    y += 15;
+    doc.setLineWidth(1);
     doc.line(40, y, pageWidth - 40, y);
 
     y += 30;
 
     doc.setTextColor(40);
-    doc.setFontSize(12.5);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12.8);
+
     const lines = doc.splitTextToSize(propostaTexto, pageWidth - 55);
 
     lines.forEach((line: string) => {
@@ -156,13 +159,13 @@ export default function PropostaIA({ user }: PropostaIAProps) {
       y += 8;
     });
 
-    // Rodapé
+    // Rodapé elegante
     const pageCount = doc.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
       doc.setFontSize(9);
       doc.setTextColor(120);
-      doc.text("Gerado por PropostaIA", pageWidth / 2, 287, { align: "center" });
+      doc.text("Gerado por PropostaIA • propostaia.pt", pageWidth / 2, 287, { align: "center" });
     }
 
     const nomeFicheiro = `Proposta_${nomeClientePDF.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
@@ -170,7 +173,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-zinc-950 text-white">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="text-center mb-16">
           <div className="flex justify-center mb-6">
@@ -179,14 +182,18 @@ export default function PropostaIA({ user }: PropostaIAProps) {
               PROPOSTAIA
             </div>
           </div>
-          <h1 className="text-5xl font-bold text-white mb-4">Propostas que vendem</h1>
-          <p className="text-zinc-400 text-xl">Crie propostas profissionais em segundos</p>
+          <h1 className="text-5xl font-bold tracking-tight mb-4">
+            Propostas que vendem
+          </h1>
+          <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+            Crie propostas profissionais, elegantes e persuasivas em segundos.
+          </p>
         </div>
 
         <div className="flex border-b border-zinc-800 mb-10">
           <button
             onClick={() => setAbaAtiva('nova')}
-            className={`px-8 py-4 text-lg font-medium ${abaAtiva === 'nova' ? 'border-b-2 border-emerald-500 text-emerald-400' : 'text-zinc-400'}`}
+            className={`px-10 py-4 text-lg font-medium transition ${abaAtiva === 'nova' ? 'border-b-2 border-emerald-500 text-emerald-400' : 'text-zinc-400 hover:text-white'}`}
           >
             Nova Proposta
           </button>
@@ -195,18 +202,19 @@ export default function PropostaIA({ user }: PropostaIAProps) {
               setAbaAtiva('historico');
               carregarHistorico();
             }}
-            className={`px-8 py-4 text-lg font-medium flex items-center gap-2 ${abaAtiva === 'historico' ? 'border-b-2 border-emerald-500 text-emerald-400' : 'text-zinc-400'}`}
+            className={`px-10 py-4 text-lg font-medium flex items-center gap-3 transition ${abaAtiva === 'historico' ? 'border-b-2 border-emerald-500 text-emerald-400' : 'text-zinc-400 hover:text-white'}`}
           >
             <Clock className="w-5 h-5" />
-            Histórico
+            Histórico ({propostasSalvas.length})
           </button>
         </div>
 
         {abaAtiva === 'nova' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            {/* Formulário */}
             <div className="bg-zinc-900 rounded-3xl p-10">
-              <h2 className="text-3xl font-semibold mb-8 text-white">Nova Proposta</h2>
-              <div className="space-y-6">
+              <h2 className="text-3xl font-semibold mb-8">Nova Proposta</h2>
+              <div className="space-y-8">
                 <div>
                   <label className="block text-sm text-zinc-400 mb-2">Nome do Cliente</label>
                   <input
@@ -214,41 +222,97 @@ export default function PropostaIA({ user }: PropostaIAProps) {
                     value={nomeCliente}
                     onChange={(e) => setNomeCliente(e.target.value)}
                     placeholder="Ex: Eng.ª Ana Costa"
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-white"
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-500"
                   />
                 </div>
+
                 <div>
                   <label className="block text-sm text-zinc-400 mb-2">Descrição do Projeto</label>
                   <textarea
                     value={descricao}
                     onChange={(e) => setDescricao(e.target.value)}
-                    placeholder="Descreva o projeto com detalhe..."
-                    className="w-full h-80 bg-zinc-800 border border-zinc-700 rounded-3xl px-6 py-6 text-white"
+                    placeholder="Descreva o projeto com o máximo de detalhe possível..."
+                    className="w-full h-80 p-6 bg-zinc-800 border border-zinc-700 rounded-3xl text-lg resize-y focus:outline-none focus:border-emerald-500"
                   />
                 </div>
+
                 <button
                   onClick={gerarProposta}
-                  disabled={loading || !descricao || !nomeCliente}
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 py-5 rounded-2xl text-lg font-semibold disabled:opacity-50"
+                  disabled={loading || !descricao.trim() || !nomeCliente.trim()}
+                  className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-700 disabled:text-zinc-500 font-semibold py-5 rounded-2xl text-xl transition flex items-center justify-center gap-3"
                 >
-                  {loading ? 'A gerar proposta...' : 'Gerar Proposta Profissional'}
+                  {loading ? (
+                    <> <Loader2 className="w-6 h-6 animate-spin" /> A gerar proposta... </>
+                  ) : (
+                    'Gerar Proposta Profissional'
+                  )}
                 </button>
               </div>
+
+              {mensagemSucesso && (
+                <div className="mt-6 flex items-center gap-3 text-emerald-400 bg-emerald-950/50 border border-emerald-900 px-6 py-4 rounded-2xl">
+                  <CheckCircle className="w-6 h-6" />
+                  {mensagemSucesso}
+                </div>
+              )}
             </div>
 
-            <div className="bg-zinc-900 rounded-3xl p-10">
-              <div className="flex justify-between mb-8">
-                <h2 className="text-3xl font-semibold">Pré-visualização</h2>
+            {/* Preview */}
+            <div className="bg-zinc-900 rounded-3xl p-10 flex flex-col">
+              <div className="flex justify-between items-center mb-8">
+                <h3 className="text-3xl font-semibold">Pré-visualização</h3>
                 {proposta && (
-                  <button onClick={() => downloadPDF(proposta, nomeCliente)} className="text-emerald-400 hover:text-emerald-500 flex items-center gap-2">
-                    <Download className="w-5 h-5" /> PDF
+                  <button
+                    onClick={() => downloadPDF(proposta, nomeCliente)}
+                    className="flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-semibold transition"
+                  >
+                    <Download className="w-5 h-5" />
+                    Download PDF
                   </button>
                 )}
               </div>
-              <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-10 min-h-[500px] text-zinc-300 whitespace-pre-wrap">
-                {proposta || "A proposta aparecerá aqui após geração..."}
-              </div>
+
+              {proposta ? (
+                <div className="flex-1 bg-zinc-950 p-10 rounded-3xl border border-zinc-800 overflow-auto text-zinc-200 leading-relaxed whitespace-pre-wrap">
+                  {proposta}
+                </div>
+              ) : (
+                <div className="flex-1 flex items-center justify-center text-zinc-500 border border-dashed border-zinc-800 rounded-3xl">
+                  A proposta aparecerá aqui após ser gerada
+                </div>
+              )}
             </div>
+          </div>
+        )}
+
+        {abaAtiva === 'historico' && (
+          <div className="bg-zinc-900 rounded-3xl p-10">
+            <h3 className="text-3xl font-semibold mb-8">Histórico de Propostas</h3>
+            {propostasSalvas.length === 0 ? (
+              <p className="text-zinc-500 text-center py-12">Ainda não tens propostas guardadas.</p>
+            ) : (
+              <div className="space-y-6">
+                {propostasSalvas.map((p) => (
+                  <div key={p.id} className="bg-zinc-800 rounded-3xl p-8 hover:bg-zinc-700 transition">
+                    <div className="flex justify-between">
+                      <div>
+                        <h4 className="font-semibold text-xl">{p.nome_cliente}</h4>
+                        <p className="text-sm text-zinc-500 mt-1">
+                          {new Date(p.created_at).toLocaleDateString('pt-PT')}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => downloadPDF(p.proposta_texto, p.nome_cliente)}
+                        className="text-emerald-400 hover:text-emerald-500"
+                      >
+                        <Download className="w-6 h-6" />
+                      </button>
+                    </div>
+                    <p className="text-zinc-400 mt-4 line-clamp-3">{p.descricao}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
