@@ -21,6 +21,9 @@ interface PropostaIAProps {
 export default function PropostaIA({ user }: PropostaIAProps) {
   const [descricao, setDescricao] = useState('');
   const [nomeCliente, setNomeCliente] = useState('');
+  const [nomeUtilizador, setNomeUtilizador] = useState('');
+  const [contacto, setContacto] = useState('');
+  const [morada, setMorada] = useState('');
   const [proposta, setProposta] = useState('');
   const [loading, setLoading] = useState(false);
   const [mensagemSucesso, setMensagemSucesso] = useState('');
@@ -46,8 +49,8 @@ export default function PropostaIA({ user }: PropostaIAProps) {
   }, [user.id]);
 
   const gerarProposta = async () => {
-    if (!descricao.trim() || !nomeCliente.trim()) {
-      alert('Por favor, preenche o nome do cliente e a descrição do projeto.');
+    if (!descricao.trim() || !nomeCliente.trim() || !nomeUtilizador.trim()) {
+      alert('Por favor, preenche o teu nome, o nome do cliente e a descrição do projeto.');
       return;
     }
 
@@ -121,7 +124,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     y += 65;
     doc.setFontSize(11);
     doc.setTextColor(180, 200, 230);
-    doc.text(`Preparada por: ${user.email}`, pageWidth / 2, y, { align: "center" });
+    doc.text(`Preparada por: ${nomeUtilizador || user.email}`, pageWidth / 2, y, { align: "center" });
 
     y += 12;
     doc.text(new Date().toLocaleDateString('pt-PT', { 
@@ -216,12 +219,45 @@ export default function PropostaIA({ user }: PropostaIAProps) {
               <h2 className="text-3xl font-semibold mb-8">Nova Proposta</h2>
               <div className="space-y-8">
                 <div>
+                  <label className="block text-sm text-zinc-400 mb-2">O teu nome (Preparada por)</label>
+                  <input
+                    type="text"
+                    value={nomeUtilizador}
+                    onChange={(e) => setNomeUtilizador(e.target.value)}
+                    placeholder="Ex: João Silva"
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
                   <label className="block text-sm text-zinc-400 mb-2">Nome do Cliente</label>
                   <input
                     type="text"
                     value={nomeCliente}
                     onChange={(e) => setNomeCliente(e.target.value)}
                     placeholder="Ex: Eng.ª Ana Costa"
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm text-zinc-400 mb-2">Contacto (opcional)</label>
+                  <input
+                    type="text"
+                    value={contacto}
+                    onChange={(e) => setContacto(e.target.value)}
+                    placeholder="Ex: 912 345 678 ou joao@email.com"
+                    className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm text-zinc-400 mb-2">Morada (opcional)</label>
+                  <input
+                    type="text"
+                    value={morada}
+                    onChange={(e) => setMorada(e.target.value)}
+                    placeholder="Ex: Rua Exemplo, 123 - 4000-000 Porto"
                     className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-500"
                   />
                 </div>
@@ -238,7 +274,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
 
                 <button
                   onClick={gerarProposta}
-                  disabled={loading || !descricao.trim() || !nomeCliente.trim()}
+                  disabled={loading || !descricao.trim() || !nomeCliente.trim() || !nomeUtilizador.trim()}
                   className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-700 disabled:text-zinc-500 font-semibold py-5 rounded-2xl text-xl transition flex items-center justify-center gap-3"
                 >
                   {loading ? (
@@ -319,3 +355,4 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     </div>
   );
 }
+
