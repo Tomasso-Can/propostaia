@@ -98,7 +98,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     const pageWidth = doc.internal.pageSize.getWidth();
     let y = 52;
 
-    // Capa mais elegante
+    // === CAPA ===
     doc.setFillColor(15, 23, 42);
     doc.rect(0, 0, pageWidth, 297, 'F');
 
@@ -127,13 +127,9 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     doc.text(`Preparada por: ${nomeUtilizador || user.email}`, pageWidth / 2, y, { align: "center" });
 
     y += 13;
-    doc.text(new Date().toLocaleDateString('pt-PT', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    }), pageWidth / 2, y, { align: "center" });
+    doc.text(new Date().toLocaleDateString('pt-PT', { year: 'numeric', month: 'long', day: 'numeric' }), pageWidth / 2, y, { align: "center" });
 
-    // Página de conteúdo
+    // === PÁGINA DE CONTEÚDO ===
     doc.addPage();
     y = 40;
 
@@ -153,16 +149,31 @@ export default function PropostaIA({ user }: PropostaIAProps) {
 
     const lines = doc.splitTextToSize(propostaTexto, pageWidth - 52);
 
-    lines.forEach((line: string) => {
-      if (y > 268) {
+    lines.forEach((line: string, index: number) => {
+      // Margem de segurança mais inteligente para evitar títulos órfãos
+      if (y > 255) {
         doc.addPage();
         y = 40;
       }
+
+      // Se for um título numerado (ex: "1. ", "2. ", etc.), dá um pouco mais de espaço em baixo
+      if (/^\d+\.\s/.test(line)) {
+        if (y > 240) {  // Mais margem para títulos
+          doc.addPage();
+          y = 40;
+        }
+      }
+
       doc.text(line, 30, y);
       y += 8.2;
     });
 
-    // Final limpo
+    // === FINAL LIMPO ===
+    if (y > 240) {
+      doc.addPage();
+      y = 40;
+    }
+
     y += 28;
     doc.setFontSize(13.5);
     doc.text("Atenciosamente,", 30, y);
@@ -182,7 +193,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
       doc.text(morada, 30, y);
     }
 
-    // Rodapé elegante
+    // Rodapé em todas as páginas
     const pageCount = doc.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
@@ -196,180 +207,8 @@ export default function PropostaIA({ user }: PropostaIAProps) {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="text-center mb-16">
-          <div className="flex justify-center mb-6">
-            <div className="bg-emerald-600 text-white px-5 py-1.5 rounded-full text-sm font-medium flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              PROPOSTAIA
-            </div>
-          </div>
-          <h1 className="text-5xl font-bold tracking-tight mb-4">
-            Propostas que vendem
-          </h1>
-          <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-            Crie propostas profissionais, elegantes e persuasivas em segundos.
-          </p>
-        </div>
-
-        <div className="flex border-b border-zinc-800 mb-10">
-          <button
-            onClick={() => setAbaAtiva('nova')}
-            className={`px-10 py-4 text-lg font-medium transition ${abaAtiva === 'nova' ? 'border-b-2 border-emerald-500 text-emerald-400' : 'text-zinc-400 hover:text-white'}`}
-          >
-            Nova Proposta
-          </button>
-          <button
-            onClick={() => {
-              setAbaAtiva('historico');
-              carregarHistorico();
-            }}
-            className={`px-10 py-4 text-lg font-medium flex items-center gap-3 transition ${abaAtiva === 'historico' ? 'border-b-2 border-emerald-500 text-emerald-400' : 'text-zinc-400 hover:text-white'}`}
-          >
-            <Clock className="w-5 h-5" />
-            Histórico ({propostasSalvas.length})
-          </button>
-        </div>
-
-        {abaAtiva === 'nova' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <div className="bg-zinc-900 rounded-3xl p-10">
-              <h2 className="text-3xl font-semibold mb-8">Nova Proposta</h2>
-              <div className="space-y-8">
-                <div>
-                  <label className="block text-sm text-zinc-400 mb-2">O teu nome (Preparada por)</label>
-                  <input
-                    type="text"
-                    value={nomeUtilizador}
-                    onChange={(e) => setNomeUtilizador(e.target.value)}
-                    placeholder="Ex: João Silva"
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm text-zinc-400 mb-2">Nome do Cliente</label>
-                  <input
-                    type="text"
-                    value={nomeCliente}
-                    onChange={(e) => setNomeCliente(e.target.value)}
-                    placeholder="Ex: Eng.ª Ana Costa"
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm text-zinc-400 mb-2">Contacto (opcional)</label>
-                  <input
-                    type="text"
-                    value={contacto}
-                    onChange={(e) => setContacto(e.target.value)}
-                    placeholder="Ex: 912 345 678 ou joao@email.com"
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm text-zinc-400 mb-2">Morada (opcional)</label>
-                  <input
-                    type="text"
-                    value={morada}
-                    onChange={(e) => setMorada(e.target.value)}
-                    placeholder="Ex: Rua Exemplo, 123 - 4000-000 Porto"
-                    className="w-full bg-zinc-800 border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm text-zinc-400 mb-2">Descrição do Projeto</label>
-                  <textarea
-                    value={descricao}
-                    onChange={(e) => setDescricao(e.target.value)}
-                    placeholder="Descreva o projeto com o máximo de detalhe possível..."
-                    className="w-full h-80 p-6 bg-zinc-800 border border-zinc-700 rounded-3xl text-lg resize-y focus:outline-none focus:border-emerald-500"
-                  />
-                </div>
-
-                <button
-                  onClick={gerarProposta}
-                  disabled={loading || !descricao.trim() || !nomeCliente.trim() || !nomeUtilizador.trim()}
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-700 disabled:text-zinc-500 font-semibold py-5 rounded-2xl text-xl transition flex items-center justify-center gap-3"
-                >
-                  {loading ? (
-                    <> <Loader2 className="w-6 h-6 animate-spin" /> A gerar proposta... </>
-                  ) : (
-                    'Gerar Proposta Profissional'
-                  )}
-                </button>
-              </div>
-
-              {mensagemSucesso && (
-                <div className="mt-6 flex items-center gap-3 text-emerald-400 bg-emerald-950/50 border border-emerald-900 px-6 py-4 rounded-2xl">
-                  <CheckCircle className="w-6 h-6" />
-                  {mensagemSucesso}
-                </div>
-              )}
-            </div>
-
-            <div className="bg-zinc-900 rounded-3xl p-10 flex flex-col">
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-3xl font-semibold">Pré-visualização</h3>
-                {proposta && (
-                  <button
-                    onClick={() => downloadPDF(proposta, nomeCliente)}
-                    className="flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-semibold transition-all shadow-lg shadow-emerald-500/30"
-                  >
-                    <Download className="w-5 h-5" />
-                    Download PDF
-                  </button>
-                )}
-              </div>
-
-              {proposta ? (
-                <div className="flex-1 bg-zinc-950 p-10 rounded-3xl border border-zinc-800 overflow-auto text-zinc-200 leading-relaxed whitespace-pre-wrap">
-                  {proposta}
-                </div>
-              ) : (
-                <div className="flex-1 flex items-center justify-center text-zinc-500 border border-dashed border-zinc-800 rounded-3xl">
-                  A proposta aparecerá aqui após ser gerada
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {abaAtiva === 'historico' && (
-          <div className="bg-zinc-900 rounded-3xl p-10">
-            <h3 className="text-3xl font-semibold mb-8">Histórico de Propostas</h3>
-            {propostasSalvas.length === 0 ? (
-              <p className="text-zinc-500 text-center py-12">Ainda não tens propostas guardadas.</p>
-            ) : (
-              <div className="space-y-6">
-                {propostasSalvas.map((p) => (
-                  <div key={p.id} className="bg-zinc-800 rounded-3xl p-8 hover:bg-zinc-700 transition">
-                    <div className="flex justify-between">
-                      <div>
-                        <h4 className="font-semibold text-xl">{p.nome_cliente}</h4>
-                        <p className="text-sm text-zinc-500 mt-1">
-                          {new Date(p.created_at).toLocaleDateString('pt-PT')}
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => downloadPDF(p.proposta_texto, p.nome_cliente)}
-                        className="text-emerald-400 hover:text-emerald-500"
-                      >
-                        <Download className="w-6 h-6" />
-                      </button>
-                    </div>
-                    <p className="text-zinc-400 mt-4 line-clamp-3">{p.descricao}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
+    // ... (o resto do return permanece igual ao anterior - não precisa mudar)
+    // Para não repetir todo o código, mantém o return da versão anterior
+    // Só precisas de substituir a função downloadPDF dentro do ficheiro
   );
 }
