@@ -96,37 +96,37 @@ export default function PropostaIA({ user }: PropostaIAProps) {
   const downloadPDF = (propostaTexto: string, nomeClientePDF: string) => {
     const doc = new jsPDF('p', 'mm', 'a4');
     const pageWidth = doc.internal.pageSize.getWidth();
-    let y = 55;
+    let y = 52;
 
-    // Capa
+    // Capa mais elegante
     doc.setFillColor(15, 23, 42);
     doc.rect(0, 0, pageWidth, 297, 'F');
 
     doc.setTextColor(255);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(42);
+    doc.setFontSize(44);
     doc.text("PROPOSTA", pageWidth / 2, y, { align: "center" });
 
-    y += 25;
-    doc.setFontSize(28);
+    y += 26;
+    doc.setFontSize(29);
     doc.text("COMERCIAL", pageWidth / 2, y, { align: "center" });
 
-    y += 75;
+    y += 72;
     doc.setFontSize(16);
     doc.setTextColor(180, 200, 255);
     doc.text("Para", pageWidth / 2, y, { align: "center" });
 
-    y += 18;
-    doc.setFontSize(23);
+    y += 19;
+    doc.setFontSize(24);
     doc.setTextColor(255);
     doc.text(nomeClientePDF.toUpperCase(), pageWidth / 2, y, { align: "center" });
 
-    y += 65;
-    doc.setFontSize(11);
+    y += 68;
+    doc.setFontSize(11.5);
     doc.setTextColor(180, 200, 230);
     doc.text(`Preparada por: ${nomeUtilizador || user.email}`, pageWidth / 2, y, { align: "center" });
 
-    y += 12;
+    y += 13;
     doc.text(new Date().toLocaleDateString('pt-PT', { 
       year: 'numeric', 
       month: 'long', 
@@ -138,56 +138,56 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     y = 40;
 
     doc.setTextColor(15, 23, 42);
-    doc.setFontSize(20);
+    doc.setFontSize(21);
     doc.text("Proposta Comercial", pageWidth / 2, y, { align: "center" });
 
-    y += 15;
-    doc.setLineWidth(1);
-    doc.line(40, y, pageWidth - 40, y);
+    y += 16;
+    doc.setLineWidth(1.1);
+    doc.line(38, y, pageWidth - 38, y);
 
-    y += 30;
+    y += 32;
 
     doc.setTextColor(40);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(12.8);
 
-    const lines = doc.splitTextToSize(propostaTexto, pageWidth - 55);
+    const lines = doc.splitTextToSize(propostaTexto, pageWidth - 52);
 
     lines.forEach((line: string) => {
-      if (y > 265) {
+      if (y > 268) {
         doc.addPage();
         y = 40;
       }
-      doc.text(line, 32, y);
-      y += 8;
+      doc.text(line, 30, y);
+      y += 8.2;
     });
 
-    // Final limpo e profissional
-    y += 35;
-    doc.setFontSize(13);
-    doc.text("Atenciosamente,", 32, y);
+    // Final limpo
+    y += 28;
+    doc.setFontSize(13.5);
+    doc.text("Atenciosamente,", 30, y);
 
-    y += 12;
+    y += 13;
     doc.setFont("helvetica", "bold");
-    doc.text(nomeUtilizador || user.email || "Equipa PropostaIA", 32, y);
+    doc.text(nomeUtilizador || user.email || "Equipa PropostaIA", 30, y);
 
     if (contacto) {
-      y += 10;
+      y += 11;
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(11);
-      doc.text(contacto, 32, y);
+      doc.setFontSize(11.5);
+      doc.text(contacto, 30, y);
     }
     if (morada) {
-      y += 8;
-      doc.text(morada, 32, y);
+      y += 9;
+      doc.text(morada, 30, y);
     }
 
-    // Rodapé
+    // Rodapé elegante
     const pageCount = doc.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
-      doc.setFontSize(9);
-      doc.setTextColor(120);
+      doc.setFontSize(9.5);
+      doc.setTextColor(130);
       doc.text("Gerado por PropostaIA • propostaia.pt", pageWidth / 2, 287, { align: "center" });
     }
 
@@ -318,7 +318,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
                 {proposta && (
                   <button
                     onClick={() => downloadPDF(proposta, nomeCliente)}
-                    className="flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-semibold transition-all"
+                    className="flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-semibold transition-all shadow-lg shadow-emerald-500/30"
                   >
                     <Download className="w-5 h-5" />
                     Download PDF
