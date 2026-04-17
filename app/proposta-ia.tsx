@@ -162,7 +162,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
       y += 8;
     });
 
-    // Final simplificado
+    // Final limpo e profissional
     y += 30;
     doc.setFontSize(13);
     doc.text("Atenciosamente,", 32, y);
@@ -170,6 +170,18 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     y += 12;
     doc.setFont("helvetica", "bold");
     doc.text(nomeUtilizador || user.email || "Equipa PropostaIA", 32, y);
+
+    if (contacto) {
+      y += 10;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(11);
+      doc.text(contacto, 32, y);
+    }
+
+    if (morada) {
+      y += 8;
+      doc.text(morada, 32, y);
+    }
 
     // Rodapé
     const pageCount = doc.getNumberOfPages();
