@@ -169,7 +169,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
 
     y += 12;
     doc.setFont("helvetica", "bold");
-    doc.text(nomeUtilizador || user.email, 32, y);
+    doc.text(nomeUtilizador || user.email || "Equipa PropostaIA", 32, y);
 
     // Rodapé discreto
     const pageCount = doc.getNumberOfPages();
