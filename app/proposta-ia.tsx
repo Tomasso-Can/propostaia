@@ -162,7 +162,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
       y += 8;
     });
 
-    // Final limpo
+    // Final limpo e profissional
     y += 35;
     doc.setFontSize(13);
     doc.text("Atenciosamente,", 32, y);
