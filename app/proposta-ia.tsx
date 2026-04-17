@@ -154,7 +154,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     const lines = doc.splitTextToSize(propostaTexto, pageWidth - 55);
 
     lines.forEach((line: string) => {
-      if (y > 270) {
+      if (y > 265) {   // Margem mais segura para evitar órfãos
         doc.addPage();
         y = 40;
       }
@@ -162,8 +162,8 @@ export default function PropostaIA({ user }: PropostaIAProps) {
       y += 8;
     });
 
-    // Final simplificado e elegante
-    y += 15;
+    // Final simplificado
+    y += 20;
     doc.setFontSize(13);
     doc.text("Atenciosamente,", 32, y);
 
