@@ -30,7 +30,7 @@ Regras importantes:
 - Usa "Âmbito dos Trabalhos" em vez de "Escopo".
 - Mantém a numeração consistente (1., 2., 3., etc.).
 - Não uses linhas com "--".
-- Não incluas no final da proposta frases como "Com os melhores cumprimentos", "[Seu Nome]", "[Seu Cargo]", "[Nome da Empresa]", "[Telefone]", "[Email]" ou qualquer despedida genérica.
+- Não incluas no final da proposta frases como "Com os melhores cumprimentos", "Atenciosamente", "[Seu Nome]", "[Seu Cargo]", "[Nome da Empresa]", "[Telefone]", "[Email]" ou qualquer despedida genérica.
 - O texto deve terminar naturalmente após os "Próximos Passos".
 
 Estrutura sugerida:
@@ -53,8 +53,9 @@ Escreve com boa fluidez, detalhe e linguagem natural.`;
 
     let propostaGerada = completion.choices[0]?.message?.content?.trim() || "Erro ao gerar proposta.";
 
-    // Limpeza final para remover qualquer texto genérico de despedida
-    propostaGerada = propostaGerada.replace(/Com os melhores cumprimentos.*$/is, '').trim();
+    // Limpeza simples do final genérico
+    propostaGerada = propostaGerada.replace(/Com os melhores cumprimentos[\s\S]*$/i, '').trim();
+    propostaGerada = propostaGerada.replace(/Atenciosamente[\s\S]*$/i, '').trim();
 
     return NextResponse.json({ 
       proposta: propostaGerada,
