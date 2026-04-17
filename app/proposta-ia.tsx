@@ -154,7 +154,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     const lines = doc.splitTextToSize(propostaTexto, pageWidth - 55);
 
     lines.forEach((line: string) => {
-      if (y > 265) {   // Margem mais segura para evitar órfãos
+      if (y > 265) {
         doc.addPage();
         y = 40;
       }
@@ -163,7 +163,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     });
 
     // Final simplificado
-    y += 20;
+    y += 25;
     doc.setFontSize(13);
     doc.text("Atenciosamente,", 32, y);
 
@@ -223,7 +223,6 @@ export default function PropostaIA({ user }: PropostaIAProps) {
 
         {abaAtiva === 'nova' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Formulário */}
             <div className="bg-zinc-900 rounded-3xl p-10">
               <h2 className="text-3xl font-semibold mb-8">Nova Proposta</h2>
               <div className="space-y-8">
@@ -302,7 +301,6 @@ export default function PropostaIA({ user }: PropostaIAProps) {
               )}
             </div>
 
-            {/* Preview */}
             <div className="bg-zinc-900 rounded-3xl p-10 flex flex-col">
               <div className="flex justify-between items-center mb-8">
                 <h3 className="text-3xl font-semibold">Pré-visualização</h3>
