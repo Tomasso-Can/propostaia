@@ -154,7 +154,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
     const lines = doc.splitTextToSize(propostaTexto, pageWidth - 55);
 
     lines.forEach((line: string) => {
-      if (y > 265) {  // Margem mais conservadora para evitar títulos órfãos
+      if (y > 265) {
         doc.addPage();
         y = 40;
       }
@@ -162,7 +162,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
       y += 8;
     });
 
-    // Final do PDF - muito limpo
+    // Final limpo
     y += 35;
     doc.setFontSize(13);
     doc.text("Atenciosamente,", 32, y);
@@ -182,7 +182,7 @@ export default function PropostaIA({ user }: PropostaIAProps) {
       doc.text(morada, 32, y);
     }
 
-    // Rodapé discreto
+    // Rodapé
     const pageCount = doc.getNumberOfPages();
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);

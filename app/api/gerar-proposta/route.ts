@@ -16,26 +16,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const prompt = `Tu és um consultor comercial sénior português com vasta experiência na elaboração de propostas claras, profissionais, detalhadas e persuasivas para clientes em Portugal e nos países de língua portuguesa.
+    const prompt = `Tu és um consultor comercial sénior português com vasta experiência na elaboração de propostas claras, profissionais e persuasivas.
 
 Projeto descrito pelo cliente:
 
 "${descricao}"
 
-Escreve uma proposta comercial completa, rica em detalhes, bem estruturada e persuasiva.
+Escreve uma proposta comercial completa, bem estruturada e persuasiva em português de Portugal.
 
 Regras importantes:
-- A introdução deve ser positiva, elegante e profissional, sem exageros desnecessários.
+- A introdução deve ser positiva e elegante, sem exageros de entusiasmo (evita frases como "é com grande entusiasmo", "estou muito entusiasmado", etc.).
 - Usa "Descrição do Projeto" em vez de "Entendimento do Projeto".
 - Usa "Âmbito dos Trabalhos" em vez de "Escopo".
-- Identifica os títulos das secções principais em **negrito** (apenas o nome da secção em negrito, sem incluir o número).
 - Mantém a numeração consistente (1., 2., 3., etc.).
 - Não uses linhas com "--".
-- Adapta o tom, o vocabulário e o preço ao tipo de projeto e ao setor.
-- O preço deve ser realista e justificado conforme a complexidade descrita.
-- Inclui detalhes suficientes para que a proposta pareça profissional e personalizada.
+- Não incluas no final da proposta frases como "Com os melhores cumprimentos", "[Seu Nome]", "[Seu Cargo]", "[Nome da Empresa]", "[Telefone]", "[Email]" ou qualquer despedida genérica.
+- O texto deve terminar naturalmente após os "Próximos Passos".
 
-Estrutura sugerida (mantém a ordem aproximada):
+Estrutura sugerida:
 1. Introdução
 2. Descrição do Projeto
 3. Âmbito dos Trabalhos
@@ -49,14 +47,14 @@ Escreve com boa fluidez, detalhe e linguagem natural.`;
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
-      temperature: 0.72,
-      max_tokens: 1700,
+      temperature: 0.68,
+      max_tokens: 1650,
     });
 
     let propostaGerada = completion.choices[0]?.message?.content?.trim() || "Erro ao gerar proposta.";
 
-    // Limpeza final para remover ** visíveis caso a IA não aplique negrito corretamente
-    propostaGerada = propostaGerada.replace(/\*\*(.+?)\*\*/g, '$1');
+    // Limpeza final para remover qualquer texto genérico de despedida
+    propostaGerada = propostaGerada.replace(/Com os melhores cumprimentos.*$/is, '').trim();
 
     return NextResponse.json({ 
       proposta: propostaGerada,
